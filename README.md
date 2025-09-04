@@ -1,0 +1,2 @@
+# UMBC-CMSC447-OCR-Proj
+temp
