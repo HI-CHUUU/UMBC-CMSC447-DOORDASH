@@ -1,2 +1,2 @@
 # UMBC-CMSC447-OCR-Proj
-temp
+** Information needs to be put in here
