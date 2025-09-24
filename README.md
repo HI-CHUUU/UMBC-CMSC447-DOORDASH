@@ -15,7 +15,7 @@ run xampp and hit start on on Apache and MySQL
 
 open a secure web browser and type in this url:
 
-localhost/UMBC447-DOORDASH-Proj
+localhost/UMBC447-DOORDASH
 
 any database management should be done on this url:
 
