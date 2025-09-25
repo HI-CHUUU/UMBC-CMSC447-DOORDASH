@@ -1,2 +1,4 @@
-# UMBC-CMSC447-OCR-Proj
-** Information needs to be put in here
+# UMBC-CMSC447-DoorDash-Proj
+
+gonna work on some backend shid
+a lil back end develiper boy :(
