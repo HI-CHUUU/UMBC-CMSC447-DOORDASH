@@ -1,4 +1,4 @@
-# UMBC-CMSC447-OCR-Proj
+# UMBC-CMSC447-DOORDASH
 Do any sort of frontend/database dev using XAMPP
 
 
