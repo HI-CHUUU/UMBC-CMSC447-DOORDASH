@@ -42,7 +42,7 @@ try {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Shopping Cart — UMBC447-DOORDASH</title>
+  <title>Shopping Cart â€” UMBC447-DOORDASH</title>
   <link rel="stylesheet" href="/UMBC447-DOORDASH/style.css">
 </head>
 <body>
@@ -51,7 +51,7 @@ try {
         <a href="dashboard.php" class="back-link">&larr; Back to Restaurants</a>
     </div>
 
-    <h2>🛒 Shopping Cart</h2>
+    <h2>ðŸ›’ Shopping Cart</h2>
     <p>Review your items before checkout</p>
 
     <?php if (isset($_GET['success'])): ?>
@@ -124,7 +124,7 @@ try {
 
                 <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
                     <a href="dashboard.php" class="btn btn-secondary" style="width: auto;">Continue Shopping</a>
-                    <a href="checkout.php" class="btn btn-success" style="width: auto;">Proceed to Checkout</a>
+                    <a href="checkout.php" class="btn btn-success btn-large" style="width: auto;">Proceed to Checkout →</a>
                 </div>
             </div>
         <?php endif; ?>

@@ -15,6 +15,12 @@ $user_id = $_SESSION['user_id'];
 $name = $_SESSION['name'];
 $role = $_SESSION['role'];
 
+// Redirect restaurant owners to their dashboard
+if ($role === 'restaurant') {
+    header("Location: /UMBC447-DOORDASH/restaurant-dashboard.php");
+    exit();
+}
+
 // Initialize variables
 $restaurants = [];
 $my_orders = [];
@@ -25,6 +31,19 @@ $all_users = [];
 
 // CUSTOMER: Fetch restaurants
 if ($role === 'customer') {
+    // Get cart item count
+    $cart_count = 0;
+    try {
+        $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE customer_id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $cart_count = (int)($row['total'] ?? 0);
+    } catch (Exception $e) {
+        // Ignore cart count errors
+    }
+    
     try {
         $result = $conn->query("SELECT id, name, description, image_url FROM restaurants");
         while ($row = $result->fetch_assoc()) {
@@ -152,10 +171,16 @@ if ($role === 'admin') {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard — UMBC447-DOORDASH</title>
+  <title>Dashboard â€” UMBC447-DOORDASH</title>
   <link rel="stylesheet" href="/UMBC447-DOORDASH/style.css">
 </head>
 <body>
+  <?php if ($role === 'customer' && isset($cart_count) && $cart_count > 0): ?>
+    <a href="view-cart.php" class="cart-icon">
+        🛒 Cart <span class="cart-count"><?php echo $cart_count; ?></span>
+    </a>
+  <?php endif; ?>
+  
   <div class="dash">
     <h2>Welcome, <?php echo htmlspecialchars($name); ?>!</h2>
     <p>You are logged in as <strong><?php echo htmlspecialchars($role); ?></strong></p>
@@ -168,13 +193,25 @@ if ($role === 'admin') {
 
             <?php if (!empty($my_orders)): ?>
                 <div class="orders-section" style="margin-bottom: 40px;">
-                    <h4 style="text-align: left; font-size: 22px; margin-bottom: 15px;">My Orders</h4>
+                    <h4 style="text-align: left; font-size: 22px; margin-bottom: 15px;">📦 My Orders</h4>
                     <?php foreach ($my_orders as $order): ?>
                         <div class="order-card">
                             <div class="order-header">
                                 <span class="order-id">Order #<?php echo $order['id']; ?></span>
                                 <span class="order-status <?php echo $order['status']; ?>">
-                                    <?php echo ucfirst($order['status']); ?>
+                                    <?php 
+                                    $status_icons = [
+                                        'pending' => '⏳',
+                                        'accepted' => '✓',
+                                        'preparing' => '👨‍🍳',
+                                        'ready' => '🔔',
+                                        'picked_up' => '🚗',
+                                        'delivered' => '✓',
+                                        'cancelled' => '✗'
+                                    ];
+                                    $icon = $status_icons[$order['status']] ?? '';
+                                    echo $icon . ' ' . ucfirst(str_replace('_', ' ', $order['status'])); 
+                                    ?>
                                 </span>
                             </div>
                             <div class="order-details">
@@ -182,6 +219,38 @@ if ($role === 'admin') {
                                 <p><strong>Total:</strong> $<?php echo number_format($order['total_amount'], 2); ?></p>
                                 <p><strong>Address:</strong> <?php echo htmlspecialchars($order['delivery_address']); ?></p>
                                 <p><strong>Ordered:</strong> <?php echo date('M j, Y g:i A', strtotime($order['created_at'])); ?></p>
+                                
+                                <?php if ($order['status'] !== 'delivered' && $order['status'] !== 'cancelled'): ?>
+                                    <!-- Order Status Tracker -->
+                                    <div class="order-tracker-mini">
+                                        <div class="tracker-steps-mini">
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'pending' || $order['status'] == 'accepted' || $order['status'] == 'preparing' || $order['status'] == 'ready' || $order['status'] == 'picked_up' || $order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">1</div>
+                                                <div class="step-label-mini">Placed</div>
+                                            </div>
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'accepted' || $order['status'] == 'preparing' || $order['status'] == 'ready' || $order['status'] == 'picked_up' || $order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">2</div>
+                                                <div class="step-label-mini">Accepted</div>
+                                            </div>
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'preparing' || $order['status'] == 'ready' || $order['status'] == 'picked_up' || $order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">3</div>
+                                                <div class="step-label-mini">Preparing</div>
+                                            </div>
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'ready' || $order['status'] == 'picked_up' || $order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">4</div>
+                                                <div class="step-label-mini">Ready</div>
+                                            </div>
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'picked_up' || $order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">5</div>
+                                                <div class="step-label-mini">Pickup</div>
+                                            </div>
+                                            <div class="tracker-step-mini <?php echo ($order['status'] == 'delivered') ? 'active' : ''; ?>">
+                                                <div class="step-icon-mini">6</div>
+                                                <div class="step-label-mini">Delivered</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -213,7 +282,7 @@ if ($role === 'admin') {
             <!-- Availability Toggle -->
             <div class="availability-toggle">
                 <div class="availability-status <?php echo $dasher_availability ? 'available' : 'unavailable'; ?>">
-                    Status: <?php echo $dasher_availability ? '🟢 Available' : '🔴 Unavailable'; ?>
+                    Status: <?php echo $dasher_availability ? 'ðŸŸ¢ Available' : 'ðŸ”´ Unavailable'; ?>
                 </div>
                 <form method="POST" action="update-availability.php" style="margin-top: 15px;">
                     <button type="submit" name="toggle_availability" class="btn <?php echo $dasher_availability ? 'btn-danger' : 'btn-success'; ?>">

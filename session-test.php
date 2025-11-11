@@ -17,7 +17,7 @@ $_SESSION['counter']++;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Session Test — UMBC447-DOORDASH</title>
+    <title>Session Test â€” UMBC447-DOORDASH</title>
     <link rel="stylesheet" href="/UMBC447-DOORDASH/style.css">
 </head>
 <body>
@@ -28,11 +28,11 @@ $_SESSION['counter']++;
         <div class="counter"><?php echo $_SESSION['counter']; ?></div>
         
         <div class="status success">
-            ✓ Session is working! Counter increases on each refresh.
+            âœ“ Session is working! Counter increases on each refresh.
         </div>
         
         <p><small>Session ID: <?php echo session_id(); ?></small></p>
-        <p style="margin-top: 20px;"><a href="index.php" class="back-link">← Back to Login</a></p>
+        <p style="margin-top: 20px;"><a href="index.php" class="back-link">â† Back to Login</a></p>
     </div>
 </body>
 </html>
