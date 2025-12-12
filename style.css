@@ -776,3 +776,366 @@ p a:hover {
         font-size: 16px;
     }
 }
+
+/* Checkout Styles */
+.checkout-section {
+    margin-bottom: 40px;
+    padding: 25px;
+    background: #fff;
+    border: 2px solid #e2e2e2;
+    border-radius: 10px;
+}
+
+.checkout-section h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #5a7bc7;
+    padding-bottom: 10px;
+}
+
+.checkout-items {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+.checkout-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.checkout-item-info {
+    flex: 1;
+}
+
+.item-quantity {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.checkout-total {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: right;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 15px;
+    color: #5a7bc7;
+}
+
+.checkout-form {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-group small {
+    display: block;
+    color: #666;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.order-info-box {
+    background: #e7f3ff;
+    border: 2px solid #b3d9ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.order-info-box h4 {
+    margin: 0 0 15px 0;
+    color: #0056b3;
+}
+
+.order-info-box p {
+    margin: 8px 0;
+    color: #333;
+    text-align: left;
+}
+
+.checkout-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: flex-end;
+}
+
+.btn-large {
+    font-size: 18px;
+    padding: 15px 30px;
+}
+
+/* Order Confirmation Styles */
+.order-confirmation-card {
+    background: #fff;
+    border: 2px solid #e2e2e2;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.order-restaurant {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.order-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.order-items-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    border-radius: 6px;
+}
+
+.order-info {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.order-info p {
+    margin: 8px 0;
+    text-align: left;
+}
+
+.order-total {
+    text-align: right;
+    font-size: 22px;
+    padding: 15px;
+    background: #d4edda;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.order-next-steps {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 30px 0;
+}
+
+.order-next-steps h4 {
+    color: #856404;
+    margin-bottom: 15px;
+}
+
+/* Order Status Tracker */
+.order-tracker {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.order-tracker h4 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tracker-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    padding: 20px 0;
+}
+
+.tracker-steps::before {
+    content: '';
+    position: absolute;
+    top: 35px;
+    left: 5%;
+    right: 5%;
+    height: 3px;
+    background: #e2e2e2;
+    z-index: 0;
+}
+
+.tracker-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e2e2e2;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border: 3px solid #fff;
+}
+
+.tracker-step.active .step-icon {
+    background: #5a7bc7;
+    color: #fff;
+}
+
+.step-label {
+    font-size: 13px;
+    text-align: center;
+    color: #666;
+    font-weight: 500;
+}
+
+.tracker-step.active .step-label {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Mini Order Tracker for Dashboard */
+.order-tracker-mini {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.tracker-steps-mini {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    padding: 10px 0;
+}
+
+.tracker-steps-mini::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: #e2e2e2;
+    z-index: 0;
+}
+
+.tracker-step-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon-mini {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e2e2e2;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 5px;
+    border: 2px solid #fff;
+}
+
+.tracker-step-mini.active .step-icon-mini {
+    background: #5a7bc7;
+    color: #fff;
+}
+
+.step-label-mini {
+    font-size: 10px;
+    text-align: center;
+    color: #666;
+    font-weight: 500;
+}
+
+.tracker-step-mini.active .step-label-mini {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Restaurant Dashboard Styles */
+.order-card.urgent {
+    border: 3px solid #ffc107;
+    background: #fffbf0;
+}
+
+.order-items-simple {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.order-items-simple li {
+    padding: 5px 0;
+    color: #555;
+}
+
+.badge-success {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #d4edda;
+    color: #155724;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Responsive adjustments for trackers */
+@media (max-width: 768px) {
+    .tracker-steps {
+        flex-wrap: wrap;
+    }
+    
+    .tracker-step {
+        flex-basis: 33.33%;
+        margin-bottom: 20px;
+    }
+    
+    .tracker-steps::before {
+        display: none;
+    }
+    
+    .checkout-actions {
+        flex-direction: column;
+    }
+    
+    .checkout-actions .btn {
+        width: 100%;
+    }
+}

@@ -1,271 +1,105 @@
-# UMBC447-DOORDASH
+# UMBC Campus Delivery Platform
 
-A complete PHP/MySQL food delivery platform developed for UMBC447. This project implements a multi-role system that supports customers, dashers, administrators, and restaurant owners. It includes full user authentication, a role-based dashboard system, and database-driven order management. All core features have been implemented, tested, and verified.
+## Project Overview
 
----
+This project is a full-stack web application designed to simulate a localized food delivery service specifically for the UMBC campus. The platform facilitates interactions between four distinct user roles: Customers, Dashers (delivery workers), Restaurant Owners, and Administrators.
 
-## Overview
+The system is built using raw PHP and MySQL to demonstrate core backend concepts, including relational database design, session management, role-based access control (RBAC), and secure transaction handling. Unlike commercial alternatives, this platform enforces strict business logic to limit service to specific campus buildings and utilizes a simulated payment gateway suitable for an academic environment.
 
-UMBC447-DOORDASH is a full-stack web application designed to simulate a delivery service platform similar to DoorDash. The system manages restaurant listings, menu items, orders, and delivery assignments. Each role has a unique interface and set of permissions.
+## Technical Architecture
 
-### Supported Roles
-
-* **Customer:** Browse restaurants, view menus, add items to a cart, place orders, and track order status.
-* **Dasher:** Toggle availability, accept and deliver orders, and update order statuses.
-* **Admin:** Monitor all users, restaurants, and orders, with access to system statistics.
-* **Restaurant Owner:** Manage menu items, set availability, and view restaurant orders.
-
----
+* **Backend:** PHP 8.0+ (Procedural style with separation of concerns)
+* **Database:** MySQL / MariaDB (InnoDB engine)
+* **Frontend:** HTML5, CSS3, Vanilla JavaScript
+* **Environment:** XAMPP (Apache HTTP Server)
 
 ## Key Features
 
-### General
+### Core Systems
+* **Shopping Cart System:** Persistent cart storage allowing items from multiple restaurants with real-time total calculation.
+* **Role-Based Access Control (RBAC):** Strict permission enforcement preventing unauthorized access to specific dashboards.
+* **Security & Validation:** All user inputs are sanitized, and sensitive data (passwords) is hashed using `bcrypt`.
 
-* User authentication with secure password hashing
-* Role-based dashboards and permissions
-* Responsive and accessible interface
-* SQL injection and XSS protection
-* Real-time order updates via AJAX
-* Color-coded order status tracking
+### User Verification Workflows
+To ensure quality control and security, the platform implements approval queues for privileged roles:
+* **Dashers:** New delivery workers can register but are placed in a "Pending" state. They cannot view or accept orders until an Administrator approves their account.
+* **Restaurant Owners:** New owners must select their specific dining venue (e.g., "Chick-fil-A", "The Halal Shack") during registration. These accounts also start as "Pending" and require Admin approval before accessing the restaurant management dashboard.
 
-### Customer Features
+### Order Lifecycle Management
+Orders progress through a defined state machine to track their real-time status:
+1.  **Pending:** Order placed by customer, awaiting restaurant acknowledgment.
+2.  **Accepted:** Restaurant confirms the order.
+3.  **Preparing:** Kitchen is preparing the food.
+4.  **Ready:** Food is packed and ready for pickup.
+5.  **Picked Up:** Dasher has collected the order.
+6.  **Delivered:** Order has reached the customer.
 
-* Register and log in as a customer
-* Browse restaurants with images and categories
-* View restaurant menus and item details
-* Add items to a shopping cart
-* Update or remove items from the cart
-* See order history and live status updates
+### Campus-Specific Constraints
+* **Location Validation:** Delivery addresses are validated against a strict allowlist of real UMBC residential and academic buildings (e.g., Patapsco Hall, ITE Building).
+* **Real-World Data:** The database is seeded with actual UMBC dining venues and accurate menu pricing based on 2025 campus data.
 
-### Dasher Features
+## Installation and Setup
 
-* Register as a dasher
-* Toggle availability (online/offline)
-* Accept available orders
-* View assigned deliveries
-* Update order status (picked up, delivered)
-* Track total deliveries and earnings
+### Prerequisites
+* XAMPP installed (Apache and MySQL services running).
+* A modern web browser.
 
-### Admin Features
+### Step 1: File Deployment
+Extract the project files into your web server's document root.
+* **Path:** `C:\xampp\htdocs\UMBC447-DOORDASH\`
 
-* View overall system statistics
-* Access all users and orders
-* Review order details (customer, restaurant, dasher, amount, date, and status)
-* Monitor revenue and order volume
-* Manage or verify account roles
+### Step 2: Database Initialization
+1.  Open phpMyAdmin (usually `http://localhost/phpmyadmin`).
+2.  Import the provided `schema.sql` file.
+3.  This script will:
+    * Create the `umbc447_doordash` database.
+    * Create all necessary tables (users, orders, restaurants, etc.).
+    * Seed the database with 11 restaurants and their menus.
 
-### Restaurant Owner Features
+### Step 3: Admin Account Creation
+Navigate to the setup script in your browser to generate the initial Administrator account.
+* **URL:** `http://localhost/UMBC447-DOORDASH/create-admin.php`
+* **Default Credentials:**
+    * Email: `admin@umbc447.com`
+    * Password: `Admin123`
 
-* Register as a restaurant owner
-* Add, edit, or delete menu items
-* Manage restaurant availability and prices
-* View incoming orders for their restaurant
+## Usage Guide & Testing
 
----
+### Testing Multiple Roles
+**Important:** PHP sessions are shared across tabs in the same browser. To test interactions between multiple users simultaneously (e.g., a Customer placing an order and a Restaurant accepting it), you must use isolated environments.
 
-## System Requirements
+* **Option A:** Use one browser for the Customer and a Private/Incognito window for the Admin/Restaurant.
+* **Option B:** Use two different browsers (e.g., Chrome for Customer, Firefox for Dasher).
 
-* **Operating System:** Windows or macOS
-* **Web Server:** Apache (via XAMPP or equivalent)
-* **Database:** MySQL
-* **Languages:** PHP 8.x, HTML, CSS, JavaScript
-* **Browser:** Chrome, Firefox, or Edge
-
----
-
-## Installation Guide
-
-### 1. Setup Environment
-
-Install [XAMPP](https://www.apachefriends.org/) or another PHP/MySQL environment.
-
-### 2. Copy Project Files
-
-Place all files in:
-
-```
-C:\xampp\htdocs\UMBC447-DOORDASH\
-```
-
-### 3. Import Database
-
-1. Open phpMyAdmin
-2. Click **Import**
-3. Choose `schema.sql`
-4. Click **Go**
-5. Verify all six tables appear:
-
-   * users
-   * restaurants
-   * menu_items
-   * orders
-   * order_items
-   * dasher_availability
-
-### 4. Create Admin Account
-
-Visit:
-
-```
-http://localhost/UMBC447-DOORDASH/create-admin.php
-```
-
-This creates an admin user with:
-
-```
-Email: admin@umbc447.com
-Password: Admin123
-```
-
-### 5. Launch Application
-
-Visit:
-
-```
-http://localhost/UMBC447-DOORDASH/
-```
-
-Log in as the admin or register new accounts for other roles.
-
----
-
-## Usage Overview
-
-### Customer Workflow
-
-1. Register and log in as a customer.
-2. Browse available restaurants.
-3. Add menu items to the cart.
-4. View the cart, update quantities, and proceed to checkout.
-5. Track the order status from placement to delivery.
-
-### Dasher Workflow
-
-1. Log in as a dasher.
-2. Toggle availability to appear online.
-3. Accept available orders.
-4. Update order status to "picked up" and then "delivered."
-
-### Admin Workflow
-
-1. Log in using admin credentials.
-2. Review system stats, user lists, and order tables.
-3. Verify order flow and role functionality.
-
-### Restaurant Owner Workflow
-
-1. Register as a restaurant owner.
-2. Access the restaurant dashboard.
-3. Manage menu items (add, edit, delete).
-4. Review and manage incoming orders.
-
----
-
-## Database Schema Summary
-
-**Tables**
-
-1. `users` — Stores user details, hashed passwords, and roles
-2. `restaurants` — Restaurant metadata and owner associations
-3. `menu_items` — Menu items linked to restaurants
-4. `orders` — Customer orders and their statuses
-5. `order_items` — Specific items per order
-6. `dasher_availability` — Tracks dasher status and availability
-7. `cart` — (New) Shopping cart table for persistent customer items
-
-Each table includes proper foreign keys and cascading relationships for data integrity.
-
----
-
-## UI and Design Notes
-
-* Primary button color: `#5a7bc7` (dark blue)
-* Hover color: `#4a6bb7`
-* White text (`#ffffff`) for maximum readability
-* Status badges are color-coded for each order state
-* Responsive design across desktop and mobile
-* Typography emphasizes clarity and accessibility
-
----
-
-## Security Features
-
-* Password hashing using PHP’s `password_hash()`
-* Prepared statements for all SQL queries
-* `htmlspecialchars()` used for user-generated output
-* Session-based authentication and role validation
-* Basic CSRF and XSS protection
-
----
+### Workflow Example
+1.  **Registration:** A new user registers as a "Restaurant Owner" and claims "The Halal Shack."
+2.  **Approval:** Log in as Admin. Navigate to the Admin Panel and locate the "Pending Restaurant Approvals" table. Click "Approve."
+3.  **Ordering:** Log in as a Customer. Add items to cart, select "Susquehanna Hall," and checkout.
+4.  **Fulfillment:** Log in as the (now approved) Restaurant Owner. Accept the pending order and mark it as "Ready."
+5.  **Delivery:** Log in as an approved Dasher. Toggle status to "Online," accept the delivery, and mark it as "Delivered."
 
 ## Troubleshooting
 
-**Invalid credentials**
-Run `create-admin.php` again and use the credentials above.
+**Issue: "Weird Characters" or Glitchy Text**
+* **Fix:** Ensure your browser is interpreting the page as UTF-8. This project forces `Content-Type: text/html; charset=utf-8` in `config.php`. Try a hard refresh (Ctrl+F5) to clear cached headers.
 
-**Database errors**
-Re-import `schema.sql` and confirm all tables exist.
+**Issue: Admin/Dasher Login Loops**
+* **Fix:** PHP sessions cannot handle multiple users in the same browser tab context. You must use an Incognito window or a different browser to log in as a second user simultaneously.
 
-**Back button not working**
-Clear your browser cache and ensure the updated `menu.php` file is present.
+**Issue: Database Connection Error**
+* **Fix:** Open `config.php` and verify that the `$user` and `$pass` variables match your local XAMPP MySQL settings (Default user is usually `root` with no password).
 
-**Buttons hard to read**
-Replace `style.css` with the latest version and reload the page.
+## Implementation Notes & Constraints
 
----
+### Directory Structure Requirement
+This application uses absolute path routing for security. You must name the project folder `UMBC447-DOORDASH` inside your `htdocs` directory.
+* **Correct:** `C:\xampp\htdocs\UMBC447-DOORDASH\`
+* **Incorrect:** `C:\xampp\htdocs\my_project\`
 
-## Testing and Verification
+If you change the folder name, you must manually update the path references in `session_boot.php` and redirect headers in all PHP files.
 
-A complete testing guide is included in `TESTING_CHECKLIST.md`.
-It covers:
-
-* Login/registration verification
-* Role-based dashboard testing
-* Button visibility and navigation
-* Order and status workflows
-* Availability toggles
-* UI responsiveness
-
----
-
-## Changelog / Recent Updates
-
-### Added: Restaurant Role & Menu Management
-
-* New user type “Restaurant Owner” with its own dashboard
-* Ability to add, edit, delete, and toggle menu item availability
-
-### Added: Shopping Cart System
-
-* Customers can add items to a cart
-* Quantities update dynamically
-* Cart subtotal calculated in real time
-* Persistent cart across sessions
-
-### Added: UI Enhancements
-
-* Button text color forced to 100% white opacity
-* Improved hover and active states
-* Better mobile scaling
-
----
-
-## Future Enhancements
-
-* Checkout and payment integration
-* Email notifications
-* Real-time order tracking
-* Ratings and reviews
-* Restaurant analytics dashboard
-* Search and filter options
-* Profile editing and saved addresses
-
----
-
-## Credits
-
-Developed for the UMBC447 course as a full-stack web application project.
-All code written in PHP, HTML, CSS, and JavaScript using a MySQL backend.
-Documentation consolidated and authored by the project developer.
-
----
+### Feature Scoping (Prototype Status)
+As this is an academic prototype, certain features are simulated:
+* **Notifications:** Alerts are "passive" (user must refresh or navigate to see them) rather than using WebSockets for "active" push notifications.
+* **Scheduling:** Worker availability is "On-Demand" (toggle switch) rather than a calendar-based future scheduling system.
+* **Payments:** The credit card form is a UI simulation; sensitive financial data is never stored.

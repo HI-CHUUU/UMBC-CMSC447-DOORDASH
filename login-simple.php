@@ -1,5 +1,5 @@
 <?php
-// Simple login without CSRF for testing
+// Simple login handler
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -10,12 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['Login'])) {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header("Location: index.php?error=Invalid+email+address");
-        exit();
-    }
-
-    $stmt = $conn->prepare("SELECT id, name, email, password_hash, role FROM users WHERE email = ?");
+    // Fetch user with approval status
+    $stmt = $conn->prepare("SELECT id, name, email, password_hash, role, is_approved FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -26,6 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['Login'])) {
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['name']    = $user['name'];
         $_SESSION['role']    = $user['role'];
+        $_SESSION['is_approved'] = (bool)$user['is_approved'];
+        
         header("Location: dashboard.php");
         exit();
     } else {
@@ -35,3 +33,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['Login'])) {
 }
 header("Location: index.php");
 exit();
+?>

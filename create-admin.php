@@ -27,17 +27,17 @@ try {
     $stmt->bind_param("ssss", $name, $email, $hash, $role);
     $stmt->execute();
     
-    echo "\n✓ Admin user created successfully!\n";
-    echo "✓ Email: admin@umbc447.com\n";
-    echo "✓ Password: Admin123\n";
-    echo "✓ Role: admin\n\n";
+    echo "\nâœ“ Admin user created successfully!\n";
+    echo "âœ“ Email: admin@umbc447.com\n";
+    echo "âœ“ Password: Admin123\n";
+    echo "âœ“ Role: admin\n\n";
     
     // Verify it works
     if (password_verify($password, $hash)) {
-        echo "✓ Password verification: SUCCESS!\n";
-        echo "✓ You can now login with Admin123\n";
+        echo "âœ“ Password verification: SUCCESS!\n";
+        echo "âœ“ You can now login with Admin123\n";
     } else {
-        echo "✗ Password verification: FAILED\n";
+        echo "âœ— Password verification: FAILED\n";
     }
     
 } catch (Exception $e) {
