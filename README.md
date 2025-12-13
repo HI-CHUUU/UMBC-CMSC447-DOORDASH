@@ -8,9 +8,6 @@ The system is built using raw PHP and MySQL to demonstrate core backend concepts
 
 ## Technical Architecture
 
-![3-Tier Web Application Architecture](path/to/architecture_diagram.png)
-*(Replace with actual diagram file)*
-
 * **Backend:** PHP 8.0+ (Procedural style with separation of concerns)
 * **Database:** MySQL / MariaDB (InnoDB engine)
 * **Frontend:** HTML5, CSS3, Vanilla JavaScript (AJAX for polling)
@@ -29,9 +26,6 @@ To ensure quality control and security, the platform implements approval queues 
 * **Restaurant Owners:** New owners must select their specific dining venue (e.g., "Chick-fil-A", "The Halal Shack") during registration. These accounts also start as "Pending" and require Admin approval.
 
 ### Advanced Order Management
-
-![Order Lifecycle State Machine](path/to/state_machine_diagram.png)
-*(Replace with actual diagram file)*
 
 * **Lifecycle State Machine:** Orders progress through defined states: Pending -> Accepted -> Preparing -> Ready -> Picked Up -> Delivered.
 * **Time Tracking:** The system captures precise timestamps for every major event (Ordered At, Accepted At, Ready At, Picked Up At, Delivered At) to provide detailed history logs.
