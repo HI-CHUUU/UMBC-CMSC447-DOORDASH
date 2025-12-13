@@ -1,10 +1,8 @@
 <?php
 /**
  * Dasher Action Controller
- * * Handles delivery logistics.
- * - Availability Toggle: Marks dasher as online/offline.
- * - Accept Order: Assigns an open order to the current dasher.
- * - Update Status: Progresses order through 'picked_up' and 'delivered' states.
+ * * Features: Logistics + Time tracking (Pickup/Delivery).
+ * * Security: Checks is_approved status.
  */
 
 session_start();
@@ -31,13 +29,12 @@ if (!$is_approved) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'];
     
-    // Action: Toggle Online/Offline
+    // Toggle Availability
     if ($action === 'toggle_availability') {
         $stmt = $conn->prepare("SELECT is_available FROM dasher_availability WHERE dasher_id = ?");
         $stmt->bind_param("i", $dasher_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        
         if ($result->num_rows > 0) {
             $conn->query("UPDATE dasher_availability SET is_available = NOT is_available WHERE dasher_id = $dasher_id");
         } else {
@@ -46,41 +43,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: dashboard.php");
     }
     
-    // Action: Accept Gig
+    // Accept Order
     if ($action === 'accept_order') {
-        $order_id = $_POST['order_id'];
+        $order_id = (int)$_POST['order_id'];
         $stmt = $conn->prepare("UPDATE orders SET dasher_id = ? WHERE id = ?");
         $stmt->bind_param("ii", $dasher_id, $order_id);
         $stmt->execute();
         
-        // Notify Customer
         $stmt = $conn->prepare("SELECT customer_id FROM orders WHERE id = ?");
         $stmt->bind_param("i", $order_id);
         $stmt->execute();
         $cid = $stmt->get_result()->fetch_assoc()['customer_id'];
-        send_notification($conn, $cid, "A dasher has accepted your order and is on the way!");
+        send_notification($conn, $cid, "A dasher has accepted your order.");
         
         header("Location: dashboard.php?success=Order+Accepted");
     }
     
-    // Action: Update Delivery Status
+    // Update Delivery Status + Timestamps
     if ($action === 'update_status') {
-        $order_id = $_POST['order_id'];
+        $order_id = (int)$_POST['order_id'];
         $status = $_POST['new_status']; // 'picked_up' or 'delivered'
         
-        $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ? AND dasher_id = ?");
-        $stmt->bind_param("sii", $status, $order_id, $dasher_id);
-        $stmt->execute();
-        
-        // Notify Customer
         $stmt = $conn->prepare("SELECT customer_id FROM orders WHERE id = ?");
         $stmt->bind_param("i", $order_id);
         $stmt->execute();
         $cid = $stmt->get_result()->fetch_assoc()['customer_id'];
         
         if ($status === 'picked_up') {
-            send_notification($conn, $cid, "Your order has been picked up!");
+            // Track Pickup Time
+            $stmt = $conn->prepare("UPDATE orders SET status = ?, picked_up_at = NOW() WHERE id = ? AND dasher_id = ?");
+            $stmt->bind_param("sii", $status, $order_id, $dasher_id);
+            $stmt->execute();
+            send_notification($conn, $cid, "Your order has been picked up! The dasher is on the way.");
         } elseif ($status === 'delivered') {
+            // Track Delivery Time
+            $stmt = $conn->prepare("UPDATE orders SET status = ?, delivered_at = NOW() WHERE id = ? AND dasher_id = ?");
+            $stmt->bind_param("sii", $status, $order_id, $dasher_id);
+            $stmt->execute();
             send_notification($conn, $cid, "Your order has been delivered. Enjoy!");
         }
         

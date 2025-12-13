@@ -8,9 +8,12 @@ The system is built using raw PHP and MySQL to demonstrate core backend concepts
 
 ## Technical Architecture
 
+![3-Tier Web Application Architecture](path/to/architecture_diagram.png)
+*(Replace with actual diagram file)*
+
 * **Backend:** PHP 8.0+ (Procedural style with separation of concerns)
 * **Database:** MySQL / MariaDB (InnoDB engine)
-* **Frontend:** HTML5, CSS3, Vanilla JavaScript
+* **Frontend:** HTML5, CSS3, Vanilla JavaScript (AJAX for polling)
 * **Environment:** XAMPP (Apache HTTP Server)
 
 ## Key Features
@@ -18,21 +21,25 @@ The system is built using raw PHP and MySQL to demonstrate core backend concepts
 ### Core Systems
 * **Shopping Cart System:** Persistent cart storage allowing items from multiple restaurants with real-time total calculation.
 * **Role-Based Access Control (RBAC):** Strict permission enforcement preventing unauthorized access to specific dashboards.
-* **Security & Validation:** All user inputs are sanitized, and sensitive data (passwords) is hashed using `bcrypt`.
+* **Security & Validation:** All user inputs are sanitized, and sensitive data (passwords) is hashed using `bcrypt` via `password_hash()`.
 
 ### User Verification Workflows
 To ensure quality control and security, the platform implements approval queues for privileged roles:
 * **Dashers:** New delivery workers can register but are placed in a "Pending" state. They cannot view or accept orders until an Administrator approves their account.
-* **Restaurant Owners:** New owners must select their specific dining venue (e.g., "Chick-fil-A", "The Halal Shack") during registration. These accounts also start as "Pending" and require Admin approval before accessing the restaurant management dashboard.
+* **Restaurant Owners:** New owners must select their specific dining venue (e.g., "Chick-fil-A", "The Halal Shack") during registration. These accounts also start as "Pending" and require Admin approval.
 
-### Order Lifecycle Management
-Orders progress through a defined state machine to track their real-time status:
-1.  **Pending:** Order placed by customer, awaiting restaurant acknowledgment.
-2.  **Accepted:** Restaurant confirms the order.
-3.  **Preparing:** Kitchen is preparing the food.
-4.  **Ready:** Food is packed and ready for pickup.
-5.  **Picked Up:** Dasher has collected the order.
-6.  **Delivered:** Order has reached the customer.
+### Advanced Order Management
+
+![Order Lifecycle State Machine](path/to/state_machine_diagram.png)
+*(Replace with actual diagram file)*
+
+* **Lifecycle State Machine:** Orders progress through defined states: Pending -> Accepted -> Preparing -> Ready -> Picked Up -> Delivered.
+* **Time Tracking:** The system captures precise timestamps for every major event (Ordered At, Accepted At, Ready At, Picked Up At, Delivered At) to provide detailed history logs.
+* **Auto-Refresh Dashboards:** The Customer, Dasher, and Admin dashboards automatically refresh (AJAX polling) to display live status updates without manual reloading.
+
+### Restaurant Autonomy
+* **Menu Management:** Restaurant owners have a dedicated interface to add new items, update prices, or remove items from their menu in real-time.
+* **Order History:** A history log displays the last 20 completed orders, showing final status and delivery times for record-keeping.
 
 ### Campus-Specific Constraints
 * **Location Validation:** Delivery addresses are validated against a strict allowlist of real UMBC residential and academic buildings (e.g., Patapsco Hall, ITE Building).
@@ -72,16 +79,18 @@ Navigate to the setup script in your browser to generate the initial Administrat
 * **Option B:** Use two different browsers (e.g., Chrome for Customer, Firefox for Dasher).
 
 ### Workflow Example
-1.  **Registration:** A new user registers as a "Restaurant Owner" and claims "The Halal Shack."
-2.  **Approval:** Log in as Admin. Navigate to the Admin Panel and locate the "Pending Restaurant Approvals" table. Click "Approve."
-3.  **Ordering:** Log in as a Customer. Add items to cart, select "Susquehanna Hall," and checkout.
-4.  **Fulfillment:** Log in as the (now approved) Restaurant Owner. Accept the pending order and mark it as "Ready."
-5.  **Delivery:** Log in as an approved Dasher. Toggle status to "Online," accept the delivery, and mark it as "Delivered."
+1.  **Registration:** A new user registers as a "Restaurant Owner" and claims "The Halal Shack".
+2.  **Approval:** Log in as Admin. Navigate to the Admin Panel and locate the "Pending Restaurant Approvals" table. Click "Approve".
+3.  **Menu Edit:** The approved Restaurant Owner logs in, scrolls to "Manage Menu," and adds a new item.
+4.  **Ordering:** Log in as a Customer. Add the new item to the cart, select "Susquehanna Hall," and checkout.
+5.  **Fulfillment:** The Restaurant Owner accepts the pending order and marks it as "Ready".
+6.  **Delivery:** An approved Dasher toggles status to "Online," accepts the delivery, and marks it as "Delivered".
+7.  **Verification:** The Customer Dashboard updates automatically to show the "Delivered" status and the final delivery timestamp.
 
 ## Troubleshooting
 
 **Issue: "Weird Characters" or Glitchy Text**
-* **Fix:** Ensure your browser is interpreting the page as UTF-8. This project forces `Content-Type: text/html; charset=utf-8` in `config.php`. Try a hard refresh (Ctrl+F5) to clear cached headers.
+* **Fix:** Ensure your browser is interpreting the page as UTF-8. This project forces `Content-Type: text/html; charset=utf-8` in `config.php` to handle emojis and special characters. Try a hard refresh (Ctrl+F5) to clear cached headers.
 
 **Issue: Admin/Dasher Login Loops**
 * **Fix:** PHP sessions cannot handle multiple users in the same browser tab context. You must use an Incognito window or a different browser to log in as a second user simultaneously.
@@ -100,6 +109,6 @@ If you change the folder name, you must manually update the path references in `
 
 ### Feature Scoping (Prototype Status)
 As this is an academic prototype, certain features are simulated:
-* **Notifications:** Alerts are "passive" (user must refresh or navigate to see them) rather than using WebSockets for "active" push notifications.
+* **Notifications:** Alerts are "passive" (user must refresh or wait for the auto-refresh script) rather than using WebSockets for "active" push notifications.
 * **Scheduling:** Worker availability is "On-Demand" (toggle switch) rather than a calendar-based future scheduling system.
 * **Payments:** The credit card form is a UI simulation; sensitive financial data is never stored.
